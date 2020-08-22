@@ -12,7 +12,7 @@ class CompanyEmpWage
         public final int empRatePerHr;
         public final int numOfWorkingDays;
         public final int maxWorkingHrs;
-        public int empTotalWage;
+        public int totalWage;
 
         public CompanyEmpWage(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs)
         {
@@ -22,9 +22,9 @@ class CompanyEmpWage
                 this.maxWorkingHrs = maxWorkingHrs;
         }
 
-        public void setTotalEmpWage(int empTotalWage)
+        public void setTotalEmpWage(int totalWage)
         {
-                this.empTotalWage = empTotalWage;
+                this.totalWage = totalWage;
         }
 }
 
@@ -56,15 +56,15 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
 
         public int ComputeWage(CompanyEmpWage companyEmpWage)
         {
-                int DailyHrs = 0;
-                int TotalHrs = 0;
+                int dailyHrs = 0;
+                int totalHrs = 0;
 
-                int DailyWage;
-                int TotalWage = 0;
+                int dailyWage;
+                int totalWage = 0;
 
                 int totalWorkingDays=0;
 
-                while(TotalHrs < companyEmpWage.maxWorkingHrs && totalWorkingDays < companyEmpWage.numOfWorkingDays)
+                while(totalHrs < companyEmpWage.maxWorkingHrs && totalWorkingDays < companyEmpWage.numOfWorkingDays)
                 {
                         totalWorkingDays++;
 
@@ -74,38 +74,48 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
                         {
                                 case IS_FULL_TIME:
                                 {
-                                        DailyHrs=8;
+                                        dailyHrs=8;
                                         break;
                                 }
                                 case IS_PART_TIME:
                                 {
-                                        DailyHrs=4;
+                                        dailyHrs=4;
                                         break;
                                 }
                         }
 
-                        TotalHrs = TotalHrs + DailyHrs;
+                        totalHrs = totalHrs + dailyHrs;
 
-                        DailyWage = companyEmpWage.empRatePerHr * DailyHrs;
-                        TotalWage = TotalWage + DailyWage;
+                        dailyWage = companyEmpWage.empRatePerHr * dailyHrs;
+                        totalWage = totalWage + dailyWage;
 
-                        System.out.println("Employee Hours for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + DailyHrs);
-                        System.out.println("Employee Wage for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + DailyWage);
+			Dictionary storeEmpDailyWage = new Hashtable();
+
+			String result = dailyWage + ":" + totalWage;
+
+			storeEmpDailyWage.put(totalWorkingDays, result);
+
+			for(Enumeration i = storeEmpDailyWage.elements();i.hasMoreElements();)
+			{
+                        	System.out.println("Value in Dictionary for Day" + totalWorkingDays + ": "+ i.nextElement());
+                        	System.out.println();
+			}
+
+                        System.out.println("Employee Hours for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + dailyHrs);
+                        System.out.println("Employee Wage for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + dailyWage);
 
                         System.out.println();
                 }
 
                 System.out.println();
                 System.out.println();
-                System.out.println("Employee Total Hours in " + companyEmpWage.companyName + ": "  + TotalHrs);
-                System.out.println("Employee Total Wage in " + companyEmpWage.companyName + ": "  + TotalWage);
+                System.out.println("Employee Total Hours in " + companyEmpWage.companyName + ": "  + totalHrs);
+                System.out.println("Employee Total Wage in " + companyEmpWage.companyName + ": "  + totalWage);
                 System.out.println();
                 System.out.println();
 
-                return TotalWage;
+                return totalWage;
         }
-
-
 
         public static void main(String[] args)
         {
