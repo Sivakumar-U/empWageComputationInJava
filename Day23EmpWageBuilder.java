@@ -1,55 +1,122 @@
-public class Day23EmpWageBuilder
+interface ComputeEmpWageInterface
 {
-	private static final int FULL_TIME = 1;
-	private static final int PART_TIME = 0;
+	 public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs);
+	 public void ComputeWage();
+}
 
-    	private final String companyName;
-    	private final int wagePerHour;
-    	private final int workingDaysPerMonth;
-    	private final int maxHours;
+class CompanyEmpWage
+{
+        public final String companyName;
+        public final int empRatePerHr;
+        public final int numOfWorkingDays;
+        public final int maxWorkingHrs;
+        public int empTotalWage;
 
-    	public Day23EmpWageBuilder(String companyName, int wagePerHour, int workingDaysPerMonth, int maxHours)
-	{
-        	this.companyName = companyName;
-        	this.wagePerHour = wagePerHour;
-        	this.workingDaysPerMonth = workingDaysPerMonth;
-        	this.maxHours = maxHours;
-    	}
+        public CompanyEmpWage(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs)
+        {
+                this.companyName = companyName;
+                this.empRatePerHr = empRatePerHr;
+                this.numOfWorkingDays = numOfWorkingDays;
+                this.maxWorkingHrs = maxWorkingHrs;
+        }
 
-    	public void get_EmployeeWageForCompany()
-	{
-        	int totalWage = 0;
-        	int dailyWage = 0;
-        	int totalDays = 0;
-        	int totalHours = 0;
-        	int workingHours = 0;
+        public void setTotalEmpWage(int empTotalWage)
+        {
+                this.empTotalWage = empTotalWage;
+        }
+}
 
-        	while (totalDays <= workingDaysPerMonth && totalHours < maxHours)
-		{
-            		totalDays++;
-            		int checkWorking = (int) (Math.random() * 3);
-            		switch (checkWorking)
-			{
-                		case FULL_TIME:
-                    			workingHours = 8;
-                    			break;
-                		case PART_TIME:
-                    			workingHours = 4;
-                    			break;
-                		default:
-                    			workingHours = 0;
-            		}
-            		dailyWage = (wagePerHour * workingHours);
-            		System.out.println("Day " + totalDays + " Employee Wage for Company " + companyName + " is " + dailyWage);
-            		totalWage += dailyWage;
-        	}
-        	System.out.println("Total Employee Wage for " + companyName + " is " + totalWage);
-    	}
+public class Day23EmpWageBuilder implements ComputeEmpWageInterface
+{
+        public static final int IS_FULL_TIME = 1;
+        public static final int IS_PART_TIME = 2;
 
-    	public static void main(String[] args)
-	{
-        	System.out.println("Welcome to Employee Wage Computation");
-       	 	Day23EmpWageBuilder employeeWageBuilder = new Day23EmpWageBuilder("Reliance", 20, 20, 50);
-        	employeeWageBuilder.get_EmployeeWageForCompany();
-    	}
+        public CompanyEmpWage[] companyEmpWageArray;
+        public int numberOfCompany;
+
+
+        public Day23EmpWageBuilder()
+        {
+                companyEmpWageArray = new CompanyEmpWage[4];
+        }
+
+
+        public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs)
+        {
+                companyEmpWageArray[numberOfCompany]=new CompanyEmpWage(companyName, empRatePerHr, numOfWorkingDays, maxWorkingHrs);
+                numberOfCompany++;
+        }
+
+
+        public void ComputeWage()
+        {
+                for(int i=0;i<numberOfCompany;i++)
+                {
+                        companyEmpWageArray[i].setTotalEmpWage(this.ComputeWage(companyEmpWageArray[i]));
+                }
+        }
+
+
+        public int ComputeWage(CompanyEmpWage companyEmpWage)
+        {
+                int DailyHrs = 0;
+                int TotalHrs = 0;
+
+                int DailyWage;
+                int TotalWage = 0;
+
+                int totalWorkingDays=0;
+
+                while(TotalHrs < companyEmpWage.maxWorkingHrs && totalWorkingDays < companyEmpWage.numOfWorkingDays)
+                {
+                        totalWorkingDays++;
+
+                        int attendanceCheck=(int)(Math.floor(Math.random()*10)%3);
+
+                        switch(attendanceCheck)
+                        {
+                                case IS_FULL_TIME:
+                                {
+                                        DailyHrs=8;
+                                        break;
+                                }
+                                case IS_PART_TIME:
+                                {
+                                        DailyHrs=4;
+                                        break;
+                                }
+                        }
+
+                        TotalHrs = TotalHrs + DailyHrs;
+
+                        DailyWage = companyEmpWage.empRatePerHr * DailyHrs;
+                        TotalWage = TotalWage + DailyWage;
+
+                        System.out.println("Employee Hours for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + DailyHrs);
+                        System.out.println("Employee Wage for Day " + totalWorkingDays + " in " + companyEmpWage.companyName + ": " + DailyWage);
+
+                        System.out.println();
+                }
+
+                System.out.println();
+                System.out.println();
+                System.out.println("Employee Total Hours in " + companyEmpWage.companyName + ": "  + TotalHrs);
+                System.out.println("Employee Total Wage in " + companyEmpWage.companyName + ": "  + TotalWage);
+                System.out.println();
+                System.out.println();
+
+                return TotalWage;
+        }
+
+
+
+        public static void main(String[] args)
+        {
+                ComputeEmpWageInterface array = new Day23EmpWageBuilder();
+
+                array.addCompany("Reliance", 20, 24, 100);
+                array.addCompany("D-Mart", 25, 27, 98);
+
+                array.ComputeWage();
+        }
 }
