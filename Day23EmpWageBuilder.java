@@ -4,6 +4,7 @@ interface ComputeEmpWageInterface
 {
 	 public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs);
 	 public void ComputeWage();
+	 public int getTotalWage(String companyName);
 }
 
 class CompanyEmpWage
@@ -20,6 +21,7 @@ class CompanyEmpWage
                 this.empRatePerHr = empRatePerHr;
                 this.numOfWorkingDays = numOfWorkingDays;
                 this.maxWorkingHrs = maxWorkingHrs;
+		totalWage = 0;
         }
 
         public void setTotalEmpWage(int totalWage)
@@ -33,14 +35,21 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
         public static final int IS_FULL_TIME = 1;
         public static final int IS_PART_TIME = 2;
 
-        public LinkedList< CompanyEmpWage > companyEmpWageList = new LinkedList< >();
+        public LinkedList< CompanyEmpWage > companyEmpWageList;
+	public Map< String,CompanyEmpWage > companyEmpWageMap;
         public int numberOfCompany=0;
 
+	public Day23EmpWageBuilder()
+	{
+		companyEmpWageList = new LinkedList<>();
+		companyEmpWageMap = new HashMap<>();
+	}
 
         public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs)
         {
                 CompanyEmpWage companyEmpWage=new CompanyEmpWage(companyName, empRatePerHr, numOfWorkingDays, maxWorkingHrs);
                 companyEmpWageList.add(companyEmpWage);
+		companyEmpWageMap.put(companyName,companyEmpWage);
         }
 
 
@@ -53,6 +62,10 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
                 }
         }
 
+	public int getTotalWage(String companyName)
+	{
+		return companyEmpWageMap.get(companyName).totalWage;
+	}
 
         public int ComputeWage(CompanyEmpWage companyEmpWage)
         {
@@ -125,5 +138,6 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
                 list.addCompany("D-Mart", 25, 27, 98);
 
                 list.ComputeWage();
+		System.out.println("Employee Total Wage for Reliance: " + list.getTotalWage("Reliance"));
         }
 }
