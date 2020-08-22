@@ -1,3 +1,5 @@
+import java.util.*;
+
 interface ComputeEmpWageInterface
 {
 	 public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs);
@@ -31,28 +33,23 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
         public static final int IS_FULL_TIME = 1;
         public static final int IS_PART_TIME = 2;
 
-        public CompanyEmpWage[] companyEmpWageArray;
-        public int numberOfCompany;
-
-
-        public Day23EmpWageBuilder()
-        {
-                companyEmpWageArray = new CompanyEmpWage[4];
-        }
+        public LinkedList< CompanyEmpWage > companyEmpWageList = new LinkedList< >();
+        public int numberOfCompany=0;
 
 
         public void addCompany(String companyName, int empRatePerHr, int numOfWorkingDays, int maxWorkingHrs)
         {
-                companyEmpWageArray[numberOfCompany]=new CompanyEmpWage(companyName, empRatePerHr, numOfWorkingDays, maxWorkingHrs);
-                numberOfCompany++;
+                CompanyEmpWage companyEmpWage=new CompanyEmpWage(companyName, empRatePerHr, numOfWorkingDays, maxWorkingHrs);
+                companyEmpWageList.add(companyEmpWage);
         }
 
 
         public void ComputeWage()
         {
-                for(int i=0;i<numberOfCompany;i++)
+                for(int i=0;i<companyEmpWageList.size();i++)
                 {
-                        companyEmpWageArray[i].setTotalEmpWage(this.ComputeWage(companyEmpWageArray[i]));
+			CompanyEmpWage companyEmpWage = companyEmpWageList.get(i);
+                        companyEmpWage.setTotalEmpWage(this.ComputeWage(companyEmpWage));
                 }
         }
 
@@ -112,11 +109,11 @@ public class Day23EmpWageBuilder implements ComputeEmpWageInterface
 
         public static void main(String[] args)
         {
-                ComputeEmpWageInterface array = new Day23EmpWageBuilder();
+                ComputeEmpWageInterface list = new Day23EmpWageBuilder();
 
-                array.addCompany("Reliance", 20, 24, 100);
-                array.addCompany("D-Mart", 25, 27, 98);
+                list.addCompany("Reliance", 20, 24, 100);
+                list.addCompany("D-Mart", 25, 27, 98);
 
-                array.ComputeWage();
+                list.ComputeWage();
         }
 }
